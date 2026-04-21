@@ -1,0 +1,14 @@
+{
+	"$schema": "https://wails.io/schemas/config.v2.json",
+	"name": "ohMyDrop",
+	"outputfilename": "ohMyDrop",
+	"frontend:install": "npm install",
+	"frontend:build": "npm run build",
+	"frontend:dev:watcher": "npm run dev",
+	"frontend:dev:serverUrl": "auto",
+	"enableDragAndDrop": true,
+	"author": {
+		"name": "ziangdotz",
+		"email": "ziangdotz@163.com"
+	}
+}

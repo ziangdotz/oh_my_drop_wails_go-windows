@@ -1,0 +1,134 @@
+:root {
+    color-scheme: dark light;
+
+    --bg-html: #11161f;
+    --bg-surface-1: #1a1a1a;
+    --bg-surface-2: #2e2e2e;
+    --bg-surface-3: #3c3c3c;
+    --bg-elevated: rgba(46, 46, 46, 0.9);
+    --bg-soft: rgba(255, 255, 255, 0.05);
+    --bg-soft-hover: rgba(255, 255, 255, 0.1);
+
+    --text-main: rgba(238, 238, 238, 1);
+    --text-muted: rgba(238, 238, 238, 0.7);
+    --text-faint: rgba(238, 238, 238, 0.5);
+
+    --border-soft: rgba(255, 255, 255, 0.1);
+    --border-strong: rgba(255, 255, 255, 0.2);
+    --divider: rgba(255, 255, 255, 0.08);
+
+    --accent: #409eff;
+    --danger: rgba(255, 82, 82, 1);
+    --danger-soft: rgba(255, 82, 82, 0.12);
+
+    --overlay-soft: rgba(255, 255, 255, 0.1);
+    --shadow-soft: rgba(0, 0, 0, 0.16);
+    --shadow-strong: rgba(0, 0, 0, 0.28);
+}
+
+@media (prefers-color-scheme: light) {
+    :root:not([data-theme='dark']):not([data-theme='light']) {
+        --bg-html: #e8e3dc;
+        --bg-surface-1: #f7f3ee;
+        --bg-surface-2: #efeae3;
+        --bg-surface-3: #e5dfd7;
+        --bg-elevated: rgba(247, 243, 238, 0.94);
+        --bg-soft: rgba(58, 45, 36, 0.05);
+        --bg-soft-hover: rgba(58, 45, 36, 0.1);
+
+        --text-main: rgba(39, 31, 25, 1);
+        --text-muted: rgba(39, 31, 25, 0.76);
+        --text-faint: rgba(39, 31, 25, 0.56);
+
+        --border-soft: rgba(71, 56, 44, 0.16);
+        --border-strong: rgba(71, 56, 44, 0.24);
+        --divider: rgba(71, 56, 44, 0.14);
+
+        --accent: #2d6edb;
+        --danger: rgba(196, 72, 62, 1);
+        --danger-soft: rgba(196, 72, 62, 0.14);
+
+        --overlay-soft: rgba(58, 45, 36, 0.12);
+        --shadow-soft: rgba(58, 45, 36, 0.12);
+        --shadow-strong: rgba(58, 45, 36, 0.22);
+    }
+}
+
+:root[data-theme='light'] {
+        --bg-html: #e8e3dc;
+        --bg-surface-1: #f7f3ee;
+        --bg-surface-2: #efeae3;
+        --bg-surface-3: #e5dfd7;
+        --bg-elevated: rgba(247, 243, 238, 0.94);
+        --bg-soft: rgba(58, 45, 36, 0.05);
+        --bg-soft-hover: rgba(58, 45, 36, 0.1);
+
+        --text-main: rgba(39, 31, 25, 1);
+        --text-muted: rgba(39, 31, 25, 0.76);
+        --text-faint: rgba(39, 31, 25, 0.56);
+
+        --border-soft: rgba(71, 56, 44, 0.16);
+        --border-strong: rgba(71, 56, 44, 0.24);
+        --divider: rgba(71, 56, 44, 0.14);
+
+        --accent: #2d6edb;
+        --danger: rgba(196, 72, 62, 1);
+        --danger-soft: rgba(196, 72, 62, 0.14);
+
+        --overlay-soft: rgba(58, 45, 36, 0.12);
+        --shadow-soft: rgba(58, 45, 36, 0.12);
+        --shadow-strong: rgba(58, 45, 36, 0.22);
+}
+
+:root[data-theme='dark'] {
+    --bg-html: #11161f;
+    --bg-surface-1: #1a1a1a;
+    --bg-surface-2: #2e2e2e;
+    --bg-surface-3: #3c3c3c;
+    --bg-elevated: rgba(46, 46, 46, 0.9);
+    --bg-soft: rgba(255, 255, 255, 0.05);
+    --bg-soft-hover: rgba(255, 255, 255, 0.1);
+
+    --text-main: rgba(238, 238, 238, 1);
+    --text-muted: rgba(238, 238, 238, 0.7);
+    --text-faint: rgba(238, 238, 238, 0.5);
+
+    --border-soft: rgba(255, 255, 255, 0.1);
+    --border-strong: rgba(255, 255, 255, 0.2);
+    --divider: rgba(255, 255, 255, 0.08);
+
+    --accent: #409eff;
+    --danger: rgba(255, 82, 82, 1);
+    --danger-soft: rgba(255, 82, 82, 0.12);
+
+    --overlay-soft: rgba(255, 255, 255, 0.1);
+    --shadow-soft: rgba(0, 0, 0, 0.16);
+    --shadow-strong: rgba(0, 0, 0, 0.28);
+}
+
+html {
+    background-color: var(--bg-html);
+    text-align: center;
+    color: var(--text-main);
+}
+
+body {
+    margin: 0;
+    color: var(--text-main);
+    font-family: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+    "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+}
+
+@font-face {
+    font-family: "Nunito";
+    font-style: normal;
+    font-weight: 400;
+    src: local(""),
+    url("assets/fonts/nunito-v16-latin-regular.woff2") format("woff2");
+}
+
+#app {
+    height: 100vh;
+    text-align: center;
+}
