@@ -227,7 +227,7 @@ type trayMenuMetrics struct {
 }
 
 func trayVersionMenuText() string {
-	return "v1.0.0"
+	return "v1.0.1"
 }
 
 func currentTrayPalette() trayMenuPalette {
@@ -533,7 +533,6 @@ func showTrayMenu() {
 		{ID_SHOW, "显示窗口"},
 		{ID_HIDE, "隐藏窗口"},
 		{ID_THEME, themeToggleMenuText()},
-		// {ID_SETTING, "设置"}, // 注释：暂时禁用“设置”菜单项
 		{0, ""},
 		{ID_QUIT, "退出"},
 	}
@@ -925,14 +924,12 @@ func getTrayMenuIconByID(id uint32) *trayIconPixels {
 		iconKey = "tray_show"
 	case ID_HIDE:
 		iconKey = "tray_hide"
-	// case ID_SETTING:
-	//     iconKey = "tray_settings" // 注释：暂时禁用设置图标加载逻辑
 	case ID_THEME:
 		// Use dedicated switch icons: when current is dark, show switch-to-light icon, and vice versa.
 		if trayMenuTheme == "dark" {
-			iconKey = "tray_swicth2light"
+			iconKey = "tray_switch2light"
 		} else {
-			iconKey = "tray_swicth2dark"
+			iconKey = "tray_switch2dark"
 		}
 	case ID_QUIT:
 		iconKey = "tray_quit"

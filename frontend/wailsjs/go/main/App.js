@@ -26,8 +26,8 @@ export function HandleFilePaths_MarkFileOperation(arg1) {
   return window['go']['main']['App']['HandleFilePaths_MarkFileOperation'](arg1);
 }
 
-export function HandleFilePaths_OpearateWithClipboard(arg1) {
-  return window['go']['main']['App']['HandleFilePaths_OpearateWithClipboard'](arg1);
+export function HandleFilePaths_OperateWithClipboard(arg1) {
+  return window['go']['main']['App']['HandleFilePaths_OperateWithClipboard'](arg1);
 }
 
 export function HideWindow() {

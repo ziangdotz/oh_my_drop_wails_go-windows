@@ -15,7 +15,7 @@ const (
 	TypeFile   = "file"
 )
 
-func util_GetFileType(path string) string {
+func getFileType(path string) string {
 	info, err := os.Stat(path)
 	if err != nil {
 		return TypeFile

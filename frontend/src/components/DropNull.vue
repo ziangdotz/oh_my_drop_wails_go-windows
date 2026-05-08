@@ -1,31 +1,23 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref } from 'vue'
 
-const isDragging = ref(false) // 标识当前是否有内容被拖拽进
-/* 监听拖拽事件 */
+const isDragging = ref(false)
 const handleDragEnter = (e) => {
 	e.preventDefault()
 	isDragging.value = true
 }
 const handleDragLeave = (e) => {
-	/* 只有当离开容器本身时才取消高亮（防止进入子元素触发 leave） */
 	if (e.currentTarget.contains(e.relatedTarget)) return
 	isDragging.value = false
 }
 const handleDragOver = (e) => {
 	e.preventDefault()
-	isDragging.value = true // 保持高亮（防止某些浏览器在 dragover 时丢失状态）
+	isDragging.value = true
 }
 const handleDrop = (e) => {
 	e.preventDefault()
-	isDragging.value = false // 释放后取消高亮
+	isDragging.value = false
 }
-
-onMounted(() => {
-})
-
-onUnmounted(() => {
-})
 </script>
 
 <template>
@@ -74,6 +66,6 @@ onUnmounted(() => {
 	color: var(--text-main);
 	font-weight: 600;
 	cursor: grab;
-	transform: scale(0.9); /* 增加缩放微动效，更有“吸入感” */
+	transform: scale(0.9); /* 增加缩放微动效，更有"吸入感" */
 }
 </style>

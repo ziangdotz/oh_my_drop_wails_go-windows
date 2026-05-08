@@ -13,6 +13,6 @@ export function HandleFilePaths_MarkFileOperate(arg1:string):Promise<void>;
 
 export function HandleFilePaths_MarkFileOperation(arg1:string):Promise<string>;
 
-export function HandleFilePaths_OpearateWithClipboard(arg1:Array<string>):Promise<string>;
+export function HandleFilePaths_OperateWithClipboard(arg1:Array<string>):Promise<string>;
 
 export function HideWindow():Promise<void>;

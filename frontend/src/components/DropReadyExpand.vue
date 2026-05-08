@@ -1,25 +1,23 @@
 <script setup>
-import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
+import { ref, computed } from 'vue'
 
-const emit = defineEmits(['windowRestore', 'moveSelected', 'copyMoveSelected', 'deleteSelected']) // 定义向父组件发送的事件
-const isDragging = ref(false) // 标识当前是否有内容被拖拽进
-/* 监听拖拽事件 */
+const emit = defineEmits(['windowRestore', 'moveSelected', 'copyMoveSelected', 'deleteSelected'])
+const isDragging = ref(false)
 const handleDragEnter = (e) => {
 	e.preventDefault()
 	isDragging.value = true
 }
 const handleDragLeave = (e) => {
-	/* 只有当离开容器本身时才取消高亮（防止进入子元素触发 leave） */
 	if (e.currentTarget.contains(e.relatedTarget)) return
 	isDragging.value = false
 }
 const handleDragOver = (e) => {
 	e.preventDefault()
-	isDragging.value = true // 保持高亮（防止某些浏览器在 dragover 时丢失状态）
+	isDragging.value = true
 }
 const handleDrop = (e) => {
 	e.preventDefault()
-	isDragging.value = false // 释放后取消高亮
+	isDragging.value = false
 }
 
 const props = defineProps({
@@ -29,41 +27,38 @@ const props = defineProps({
 	},
 })
 
-/* 响应顶部缩小点击 */
 const handleWindowRestore = async () => {
-	emit('windowRestore') // 通知父组件切换页面状态
+	emit('windowRestore')
 }
 
-const filesStackViewMode = ref('grid') // filesStack 默认为宫格模式
-const fileItemSelectedPaths = ref(new Set()) // 存储 fileItem 选中项的索引
-/* 切换 fileItem 选中状态 */
+const filesStackViewMode = ref('grid')
+const fileItemSelectedPaths = ref(new Set())
 const fileItemToggleSelect = (path) => {
-	if (fileItemSelectedPaths.value.has(path)) {
-		fileItemSelectedPaths.value.delete(path)
+	const newSet = new Set(fileItemSelectedPaths.value)
+	if (newSet.has(path)) {
+		newSet.delete(path)
 	} else {
-		fileItemSelectedPaths.value.add(path)
+		newSet.add(path)
 	}
+	fileItemSelectedPaths.value = newSet
 }
-/* 提取 path 中的 fileName */
 const getFileNameFromImg = (path) => {
 	if (!path) return 'Unknown'
 	return path.split(/[\\/]/).pop()
 }
 
-const fileNameSortType = ref('nameAsc') // 默认文件名排序状态为
-/* 切换文件名排序状态 */
+const fileNameSortType = ref('nameAsc')
 const fileNameToggleSortType = () => {
 	fileNameSortType.value = fileNameSortType.value === 'nameAsc' ? 'nameDesc' : 'nameAsc'
 }
-/* 排序逻辑 */
 const fileNameSorted = computed(() => {
-	let list = [...props.images] // 浅拷贝，不污染原始数据
+	let list = [...props.images]
 	return list.sort((a, b) => {
 		const nameA = getFileNameFromImg(a.path).toLowerCase()
 		const nameB = getFileNameFromImg(b.path).toLowerCase()
 		if (fileNameSortType.value === 'nameAsc') {
 			return nameA.localeCompare(nameB, 'zh-CN', { numeric: true })
-		} else { // nameDesc
+		} else {
 			return nameB.localeCompare(nameA, 'zh-CN', { numeric: true })
 		}
 	})
@@ -73,21 +68,10 @@ const handleAction = (actionType) => {
 	if (fileItemSelectedPaths.value.size === 0) {
 		return
 	}
-	const fileItemSelectedIndicesArray = props.images.map((img, index) => fileItemSelectedPaths.value.has(img.path) ? index : -1).filter(idx => idx !== -1) // 将选中的 path 转回原始数组中的索引发送给父组件
+	const fileItemSelectedIndicesArray = props.images.map((img, index) => fileItemSelectedPaths.value.has(img.path) ? index : -1).filter(idx => idx !== -1)
 	emit(actionType, fileItemSelectedIndicesArray)
-	fileItemSelectedPaths.value.clear()
+	fileItemSelectedPaths.value = new Set()
 }
-
-onMounted(() => {
-})
-
-onUnmounted(() => {
-})
-
-/* 监听 props 变化，当 App.vue 更新路径列表时重新渲染 */
-watch(() => props.filePaths, () => {
-	loadImagesInfo()
-}, { deep: true })
 </script>
 
 <template>
@@ -143,28 +127,6 @@ watch(() => props.filePaths, () => {
 
 				<div class="header_action_divider"></div>
 
-				<!-- <button v-if="filesStackViewMode === 'grid'"
-						class="header_action_icon_btn other_btn"
-						@click="filesStackViewMode = 'list'"
-						title="切换到列表视图">
-					<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-						<line x1="9" y1="6" x2="20" y2="6"></line>
-						<line x1="9" y1="12" x2="20" y2="12"></line>
-						<line x1="9" y1="18" x2="20" y2="18"></line>
-						<path d="M4 6h.01M4 12h.01M4 18h.01"></path>
-					</svg>
-				</button> -->
-				<!-- <button v-else class="header_action_icon_btn other_btn"
-						@click="filesStackViewMode = 'grid'"
-						title="切换到宫格视图">
-					<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-						<rect x="3" y="3" width="7" height="7" rx="1"></rect>
-						<rect x="14" y="3" width="7" height="7" rx="1"></rect>
-						<rect x="14" y="14" width="7" height="7" rx="1"></rect>
-						<rect x="3" y="14" width="7" height="7" rx="1"></rect>
-					</svg>
-				</button> -->
-
 				<button class="header_action_icon_btn other_btn"
 					@click="fileNameToggleSortType"
 					:title="fileNameSortType === 'nameAsc' ? '切换为降序' : '切换为升序'">
@@ -203,9 +165,6 @@ watch(() => props.filePaths, () => {
 			</div>
 			<div v-if="isDragging" class="drag_overlay">
 			</div>
-		</div>
-
-		<div class="footer_info_area">
 		</div>
 	</div>
 </template>

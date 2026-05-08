@@ -3,6 +3,7 @@ package main
 import (
 	"embed"
 	"flag"
+	"log"
 
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
@@ -30,7 +31,7 @@ func main() {
 		DisableResize: true,                           // 禁止调整窗口大小
 		Frameless:     true,                           // 开启无边框模式
 		AlwaysOnTop:   true,                           // 是否置顶
-		StartHidden:   *startX == -1 && *startY == -1, // 启动时隐藏窗口：如果坐标是默认值 -1，说明是初次启动，开启隐藏；如果坐标不是 -1，说明是用户点击“新建窗口”启动的，直接显示
+		StartHidden:   *startX == -1 && *startY == -1, // 启动时隐藏窗口：如果坐标是默认值 -1，说明是初次启动，开启隐藏；如果坐标不是 -1，说明是用户点击"新建窗口"启动的，直接显示
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},
@@ -55,6 +56,6 @@ func main() {
 
 	err := wails.Run(appOptions)
 	if err != nil {
-		println("Error:", err.Error())
+		log.Fatal(err)
 	}
 }

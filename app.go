@@ -3,11 +3,11 @@ package main
 import (
 	"bytes"
 	"context"
+	"crypto/rand"
 	"encoding/base64"
 	"encoding/hex"
 	"fmt"
 	"image/jpeg"
-	"math/rand"
 	"os"
 	"path/filepath"
 	"strings"
@@ -42,18 +42,8 @@ func (a *App) startup(ctx context.Context) {
 
 	initSystray(ctx)
 
-	// if a.initialX != -1 && a.initialY != -1 {
-	// 	go func() {
-	// 		time.Sleep(200 * time.Millisecond)
-	// 		wailsRuntime.WindowSetPosition(ctx, a.initialX, a.initialY)
-	// 		a.isVisible = true
-	// 		wailsRuntime.WindowShow(ctx)
-	// 	}()
-	// } else {
 	wailsRuntime.WindowCenter(ctx)
 	a.isVisible = false
-	// }
-	fmt.Println("Wails Startup 已启动...")
 	go a.listenGlobalSpace() // 启动监听
 }
 
@@ -118,20 +108,12 @@ func (a *App) togglePreview() {
 	} else {
 		a.isVisible = true // 先设置状态
 		go func() {
-			// pid := os.Getpid()
-			// baseDelay := (pid % 5) * 60
-			// seedValue := time.Now().UnixNano() + int64(pid)
-			// r := rand.New(rand.NewSource(seedValue))
-			// jitter := r.Intn(20)
-			// time.Sleep(time.Duration(baseDelay+jitter) * time.Millisecond)
-
-			wailsRuntime.WindowShow(a.ctx) // 显示窗口
+			wailsRuntime.WindowShow(a.ctx)
 			wailsRuntime.WindowUnminimise(a.ctx)
 			if a.initialX == -1 && a.initialY == -1 {
-				time.Sleep(50 * time.Millisecond) // 延迟一下
-				wailsRuntime.WindowCenter(a.ctx)  // 在屏幕中间弹出
+				time.Sleep(50 * time.Millisecond)
+				wailsRuntime.WindowCenter(a.ctx)
 			}
-			// wailsRuntime.WindowSetAlwaysOnTop(a.ctx, true) // 强行置顶并聚焦
 		}()
 	}
 }
@@ -142,25 +124,6 @@ func (a *App) HideWindow() {
 	a.isVisible = false
 	wailsRuntime.WindowHide(a.ctx)
 }
-
-// // 响应 Vue + Wails 的 NewWindow 按钮，启动当前程序的新实例
-// func (a *App) NewWindow(windowDpr float64) {
-// 	/* 计算坐标 */
-// 	x, y := wailsRuntime.WindowGetPosition(a.ctx)
-// 	w, _ := wailsRuntime.WindowGetSize(a.ctx)
-// 	newX := x + w + int(20*windowDpr) // 新窗口在当前窗口右侧，间隔 20 px
-// 	newY := y
-
-// 	/* 获取当前可执行文件路径 */
-// 	exe, err := os.Executable()
-// 	if err != nil {
-// 		return
-// 	}
-// 	/* 根据操作系统处理启动逻辑 */
-// 	var cmd *exec.Cmd
-// 	cmd = exec.Command(exe, fmt.Sprintf("-x=%d", newX), fmt.Sprintf("-y=%d", newY)) // Windows 直接运行
-// 	_ = cmd.Start()                                                                 // 启动新进程，不阻塞当前进程
-// }
 
 type Thumbnail struct {
 	Path        string  `json:"path"`
@@ -173,8 +136,6 @@ var thumbnailsCache sync.Map
 
 // 生成缩略图
 func (a *App) HandleFilePaths_GetThumbnails(paths []string) {
-	// fmt.Println("[Go] 从 Vue + Wails 接收到的绝对路径:", paths)
-
 	sem := make(chan struct{}, 5) // 限制最大并发处理数为 5，防止 CPU 和内存瞬间过载
 	var wg sync.WaitGroup
 
@@ -191,7 +152,7 @@ func (a *App) HandleFilePaths_GetThumbnails(paths []string) {
 		go func(p string) {
 			defer wg.Done()
 			defer func() { <-sem }() // 释放信号量
-			fileType := util_GetFileType(p)
+			fileType := getFileType(p)
 			var data Thumbnail
 			if fileType == TypeImage {
 				// 1. 打开图片并自动处理 EXIF 旋转方向
@@ -201,8 +162,7 @@ func (a *App) HandleFilePaths_GetThumbnails(paths []string) {
 				}
 				// 2. 生成缩略图：高度固定 100，宽度设为 0 表示等比例缩放
 				thumb := imaging.Resize(src, 0, 100, imaging.Linear)
-				// thumb := imaging.Resize(src, 0, 100, imaging.Lanczos)
-				// 3. 编码为 JPEG Base64
+				// 编码为 JPEG Base64
 				buf := new(bytes.Buffer)
 				err = jpeg.Encode(buf, thumb, &jpeg.Options{Quality: 50})
 				if err != nil {
@@ -260,8 +220,7 @@ func isValidPath(path string) bool {
 	/* 敏感目录黑名单 (转为小写比较，适应 Windows 不区分大小写) */
 	lowerPath := strings.ToLower(cleanPath)
 	blacklist := []string{
-		strings.ToLower(os.Getenv("SystemRoot")),         // 通常是 C:\Windows
-		"/etc", "/proc", "/dev", "/bin", "/sbin", "/usr", // Macos（Darwin）敏感目录
+		strings.ToLower(os.Getenv("SystemRoot")),
 	}
 	for _, prefix := range blacklist {
 		if prefix != "" && strings.HasPrefix(lowerPath, prefix) {
@@ -343,7 +302,7 @@ func (a *App) HandleFilePaths_CompleteOperation(operationIDs []string) string {
 }
 
 /* 操作剪切板 */
-func (a *App) HandleFilePaths_OpearateWithClipboard(filePaths []string) string {
+func (a *App) HandleFilePaths_OperateWithClipboard(filePaths []string) string {
 	/* 批量验证并收集路径 */
 	var validPaths []string
 	for _, filePath := range filePaths {

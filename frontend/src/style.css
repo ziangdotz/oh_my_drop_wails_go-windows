@@ -80,32 +80,6 @@
         --shadow-strong: rgba(58, 45, 36, 0.22);
 }
 
-:root[data-theme='dark'] {
-    --bg-html: #11161f;
-    --bg-surface-1: #1a1a1a;
-    --bg-surface-2: #2e2e2e;
-    --bg-surface-3: #3c3c3c;
-    --bg-elevated: rgba(46, 46, 46, 0.9);
-    --bg-soft: rgba(255, 255, 255, 0.05);
-    --bg-soft-hover: rgba(255, 255, 255, 0.1);
-
-    --text-main: rgba(238, 238, 238, 1);
-    --text-muted: rgba(238, 238, 238, 0.7);
-    --text-faint: rgba(238, 238, 238, 0.5);
-
-    --border-soft: rgba(255, 255, 255, 0.1);
-    --border-strong: rgba(255, 255, 255, 0.2);
-    --divider: rgba(255, 255, 255, 0.08);
-
-    --accent: #409eff;
-    --danger: rgba(255, 82, 82, 1);
-    --danger-soft: rgba(255, 82, 82, 0.12);
-
-    --overlay-soft: rgba(255, 255, 255, 0.1);
-    --shadow-soft: rgba(0, 0, 0, 0.16);
-    --shadow-strong: rgba(0, 0, 0, 0.28);
-}
-
 html {
     background-color: var(--bg-html);
     text-align: center;

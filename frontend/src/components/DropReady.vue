@@ -1,26 +1,24 @@
 <script setup>
-import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
+import { ref } from 'vue'
 import * as Runtime from '@wailsjs/runtime'
 
-const emit = defineEmits(['windowExpand']) // 定义向父组件发送的事件
-const isDragging = ref(false) // 标识当前是否有内容被拖拽进
-/* 监听拖拽事件 */
+const emit = defineEmits(['windowExpand'])
+const isDragging = ref(false)
 const handleDragEnter = (e) => {
 	e.preventDefault()
 	isDragging.value = true
 }
 const handleDragLeave = (e) => {
-	/* 只有当离开容器本身时才取消高亮（防止进入子元素触发 leave） */
 	if (e.currentTarget.contains(e.relatedTarget)) return
 	isDragging.value = false
 }
 const handleDragOver = (e) => {
 	e.preventDefault()
-	isDragging.value = true // 保持高亮（防止某些浏览器在 dragover 时丢失状态）
+	isDragging.value = true
 }
 const handleDrop = (e) => {
 	e.preventDefault()
-	isDragging.value = false // 释放后取消高亮
+	isDragging.value = false
 }
 
 const props = defineProps({
@@ -32,80 +30,13 @@ const props = defineProps({
 		type: Number,
 		default: 0
 	},
-	// filePaths: {
-	// 	type: Array,
-	// 	default: () => []
-	// }
 })
 
-/* 响应底部的 count_content 点击 */
 const handleWindowExpand = async () => {
-	// 1. 改变窗口大小
 	await Runtime.WindowSetSize(600, 400)
-	// 2. 居中窗口（可选，防止窗口只向右下角单向扩张）
 	await Runtime.WindowCenter()
-	// 3. 通知父组件切换页面状态
 	emit('windowExpand')
 }
-
-// const currentOpIDs = ref([]) // 存储本次拖拽产生的所有操作 ID
-// /* 从窗口拖拽出开始事件 */
-// const handleDragStart = async (e) => {
-// 	if (props.filePaths.length === 0) {
-// 		return
-// 	}
-// 	/* 设置拖拽效果 */
-// 	e.dataTransfer.effectAllowed = 'copyMove'
-// 	/* 设置系统识别的文件 URI */
-// 	const cleanPathTest = `${props.filePaths[0]`.replace(/\\/g, '/')`}` // 虚拟一个压缩包的名字，路径标准化
-// 	const fileUrlTest = `file:///${encodeURI(cleanPathTest).replace(/%5C/g, '/')}` // 构建 file:/// 协议 URL
-// 	const fileNameTest = cleanPathTest.split('/').pop();
-// 	const downloadUrlDataTest = `application/octet-stream:${fileNameTest}:${fileUrlTest}` // 格式: mime:name:url
-// 	/* 设置 DataTransfer 数据 */
-// 	e.dataTransfer.setData('text/plain', fileUrlTest);
-// 	e.dataTransfer.setData('DownloadURL', downloadUrlDataTest)
-// 	/* 通知 Go 后端标记文件操作 */
-// 	currentOpIDs.value = []
-// 	window.go.main.App.HandleFilePaths_MarkFileOperate("copyMove")
-// 	for (const filePath of props.filePaths) {
-// 		if (window.go?.main?.App) {
-// 			try {
-// 				const id = await window.go.main.App.HandleFilePaths_MarkFileOperation(filePath)
-// 				if (id) {
-// 					currentOpIDs.value.push(id)
-// 				}
-// 			} catch (err) {
-// 				console.error("无法完成标记文件操作:", err)
-// 			}
-// 		}
-// 	}
-// }
-// /* 从窗口拖拽出结束事件 */
-// const handleDragEnd = async (e) => {
-// 	/* 如果 dropEffect 不是 none，说明拖拽成功 */
-// 	if (currentOpIDs.value.length > 0 && e.dataTransfer.dropEffect !== 'none') {
-// 		try {
-// 			const ids = Array.from(currentOpIDs.value);
-// 			console.log("Sending IDs:", JSON.stringify(ids))
-// 			const result = await window.go.main.App.HandleFilePaths_CompleteOperation(ids);
-// 			if (result === "success") {
-// 				currentOpIDs.value = []; // 清空本次操作 ID 列表
-// 			}
-// 		} catch (err) {
-// 			console.error('从窗口拖拽出结束事件失败:', err)
-// 		}
-// 	}
-// }
-
-onMounted(() => {
-})
-
-onUnmounted(() => {
-})
-
-/* 监听 props 变化，当 App.vue 更新路径列表时重新渲染 */
-watch(() => props.filePaths, (newVal) => {
-}, { deep: true })
 </script>
 
 <template>
@@ -116,16 +47,14 @@ watch(() => props.filePaths, (newVal) => {
 		@dragover="handleDragOver"
 		@drop="handleDrop"
 		draggable="true">
-		<!-- @dragstart="handleDragStart"
-		@dragend="handleDragEnd"> -->
 		<div class="minimap_stack_area">
 			<div class="minimap_stack">
-				<div v-for="(img, index) in props.images"
+				<div v-for="(img, index) in images"
 					:key="index"
 					:class="['minimap_card', `is-${img.orientation}`]"
 					:style="{
 						'--index': index,
-						'--total': props.images.length,
+						'--total': images.length,
 						'aspect-ratio': img.ratio
 					}">
 					<div class="minimap_inner">
@@ -141,7 +70,7 @@ watch(() => props.filePaths, (newVal) => {
 		<div class="footer_action">
 			<button class="count_content"
 				@click="handleWindowExpand">
-				<span>{{ props.totalCount || images.length }} 项内容已选中</span>
+				<span>{{ totalCount || images.length }} 项内容已选中</span>
 				<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"
 					stroke-linecap="round" stroke-linejoin="round">
 					<polyline points="15 3 21 3 21 9"></polyline>
@@ -258,7 +187,6 @@ watch(() => props.filePaths, (newVal) => {
 	align-items: center;
 	justify-content: center;
 	gap: 5px;
-	border: 1px solid var(--border-soft);
 	color: var(--text-main);
 	font-size: 13px;
 	font-weight: 500;
