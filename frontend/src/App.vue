@@ -65,6 +65,7 @@ function hideWindow() {
 }
 
 onMounted(() => {
+	document.addEventListener('contextmenu', (e) => e.preventDefault())
 	setupThumbnailsListeners()
 	Runtime.EventsOn("theme_toggle", toggleThemeFromTray)
 
