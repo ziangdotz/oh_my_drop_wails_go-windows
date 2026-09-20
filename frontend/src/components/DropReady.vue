@@ -1,25 +1,8 @@
 <script setup>
-import { ref } from 'vue'
-import * as Runtime from '@wailsjs/runtime'
+import { useDragState } from '../composables/useDragState.js'
 
 const emit = defineEmits(['windowExpand'])
-const isDragging = ref(false)
-const handleDragEnter = (e) => {
-	e.preventDefault()
-	isDragging.value = true
-}
-const handleDragLeave = (e) => {
-	if (e.currentTarget.contains(e.relatedTarget)) return
-	isDragging.value = false
-}
-const handleDragOver = (e) => {
-	e.preventDefault()
-	isDragging.value = true
-}
-const handleDrop = (e) => {
-	e.preventDefault()
-	isDragging.value = false
-}
+const { isDragging, handleDragEnter, handleDragLeave, handleDragOver, handleDrop } = useDragState()
 
 const props = defineProps({
 	images: {
@@ -32,9 +15,8 @@ const props = defineProps({
 	},
 })
 
-const handleWindowExpand = async () => {
-	await Runtime.WindowSetSize(600, 400)
-	await Runtime.WindowCenter()
+// 尺寸调整与居中统一交由 App 层的 useWindowResize 处理，避免魔数与重复调用
+const handleWindowExpand = () => {
 	emit('windowExpand')
 }
 </script>

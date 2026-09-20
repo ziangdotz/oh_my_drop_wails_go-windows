@@ -89,13 +89,23 @@ func (a *App) writeFilesToClipboard(paths []string, isMove bool) error {
 	formatName, _ := windows.UTF16PtrFromString("Preferred DropEffect")
 	cfDropEffect, _, _ := registerFormat.Call(uintptr(unsafe.Pointer(formatName)))
 	hEffect, _, _ := globalAlloc.Call(GMEM_MOVEABLE|GMEM_ZEROINIT, 4)
+	if hEffect == 0 {
+		return fmt.Errorf("DropEffect 内存分配失败")
+	}
 	ePtr, _, _ := globalLock.Call(hEffect)
+	if ePtr == 0 {
+		globalFree.Call(hEffect)
+		return fmt.Errorf("DropEffect GlobalLock 失败")
+	}
 	if isMove {
 		*(*uint32)(unsafe.Pointer(ePtr)) = DROPEFFECT_MOVE
 	} else {
 		*(*uint32)(unsafe.Pointer(ePtr)) = DROPEFFECT_COPY
 	}
 	globalUnlock.Call(hEffect)
-	setClipboardData.Call(cfDropEffect, hEffect)
+	if h, _, _ := setClipboardData.Call(cfDropEffect, hEffect); h == 0 {
+		globalFree.Call(hEffect)
+		return fmt.Errorf("SetClipboardData DropEffect 失败")
+	}
 	return nil
 }

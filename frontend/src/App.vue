@@ -30,7 +30,7 @@ const { currentPage, handleWindowExpand, handleWindowRestore } = useWindowResize
 const selectedFilePaths = ref([])
 const hasFileContent = ref(false)
 
-const { thumbnailsMap, setupThumbnailsListeners, displayImages, displayImagesForReady, handleFileContentDropped, clearThumbnailsCache } = useThumbnails(selectedFilePaths, hasFileContent)
+const { thumbnailsMap, loadPredefinedIcons, setupThumbnailsListeners, displayImages, displayImagesForReady, handleFileContentDropped, clearThumbnailsCache } = useThumbnails(selectedFilePaths, hasFileContent)
 
 const {
 	handleDeleteSelected,
@@ -67,6 +67,7 @@ function hideWindow() {
 onMounted(() => {
 	document.addEventListener('contextmenu', (e) => e.preventDefault())
 	setupThumbnailsListeners()
+	loadPredefinedIcons()
 	Runtime.EventsOn("theme_toggle", toggleThemeFromTray)
 
 	Runtime.OnFileDrop((x, y, paths) => {

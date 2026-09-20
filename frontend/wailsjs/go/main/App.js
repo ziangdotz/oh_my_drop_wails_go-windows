@@ -14,6 +14,10 @@ export function HandleFilePaths_CompleteOperation(arg1) {
   return window['go']['main']['App']['HandleFilePaths_CompleteOperation'](arg1);
 }
 
+export function HandleFilePaths_GetPredefinedIcons() {
+  return window['go']['main']['App']['HandleFilePaths_GetPredefinedIcons']();
+}
+
 export function HandleFilePaths_GetThumbnails(arg1) {
   return window['go']['main']['App']['HandleFilePaths_GetThumbnails'](arg1);
 }

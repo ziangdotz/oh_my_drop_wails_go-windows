@@ -1,23 +1,7 @@
 <script setup>
-import { ref } from 'vue'
+import { useDragState } from '../composables/useDragState.js'
 
-const isDragging = ref(false)
-const handleDragEnter = (e) => {
-	e.preventDefault()
-	isDragging.value = true
-}
-const handleDragLeave = (e) => {
-	if (e.currentTarget.contains(e.relatedTarget)) return
-	isDragging.value = false
-}
-const handleDragOver = (e) => {
-	e.preventDefault()
-	isDragging.value = true
-}
-const handleDrop = (e) => {
-	e.preventDefault()
-	isDragging.value = false
-}
+const { isDragging, handleDragEnter, handleDragLeave, handleDragOver, handleDrop } = useDragState()
 </script>
 
 <template>

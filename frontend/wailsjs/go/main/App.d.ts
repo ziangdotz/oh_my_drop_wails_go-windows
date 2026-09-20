@@ -7,6 +7,8 @@ export function HandleFilePaths_ClearThumbnailsCache():Promise<void>;
 
 export function HandleFilePaths_CompleteOperation(arg1:Array<string>):Promise<string>;
 
+export function HandleFilePaths_GetPredefinedIcons():Promise<Record<string, string>>;
+
 export function HandleFilePaths_GetThumbnails(arg1:Array<string>):Promise<void>;
 
 export function HandleFilePaths_MarkFileOperate(arg1:string):Promise<void>;
